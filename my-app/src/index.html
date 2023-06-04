@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Timer App</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
+  <div class="clock-container">
+    <div class="clock-col">
+      <p class="clock-minutes clock-timer">
+      </p>
+      <p class="clock-label">
+        Minutes
+      </p>
+    </div>
+    <div class="clock-col">
+      <p class="clock-seconds clock-timer">
+      </p>
+      <p class="clock-label">
+        Seconds
+      </p>
+    </div>
+  </div>
+
+  <script>
+
+    function getQueryParam(param) {
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      return urlParams.get(param);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      requestAnimationFrame(updateTime);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTime();
+    });
+
+    function updateTime() {
+
+      // Calculate the remaining time
+
+      const duration = parseInt(getQueryParam('duration'));
+
+      if (!updateTime.startingDate) {
+        updateTime.startingDate = new Date(); // Set the starting date as the current date and time
+        updateTime.startingDate.setMinutes(updateTime.startingDate.getMinutes() + duration); // Add 5 minutes to the starting date
+      }
+
+      // Calculate the remaining time
+      const currentTime = new Date().getTime();
+      const endTime = updateTime.startingDate;
+      const remainingTime = endTime - currentTime;
+
+      // Convert remaining time to days, hours, minutes, and seconds
+      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+      // Update the timer elements with the new value
+
+      document.documentElement.style.setProperty('--timer-minutes', "'" + minutes + "'");
+      document.documentElement.style.setProperty('--timer-seconds', "'" + seconds + "'");
+      requestAnimationFrame(updateTime);
+    }
+
+  </script>
+</body>
+</html>
