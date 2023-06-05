@@ -18,7 +18,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-acrylic-window": "^0.5.11",
+    "electron-squirrel-startup": "^1.0.0",
+    "gsap": "^3.11.5",
+    "sound-play": "^1.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.1.1",

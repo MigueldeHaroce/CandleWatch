@@ -4,31 +4,86 @@
   <meta charset="UTF-8">
   <title>Timer App</title>
   <style>
-    body {
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    
+    body{
+      background-color: transparent;
+      text-align: center;
       display: flex;
-      justify-content: center;
+      background-position: center;
+      font-family: 'Montserrat', 'sans-serif';
+      min-height: 100vh;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+      border-radius: 12px;
+      -webkit-app-region: drag;
     }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
+
+    svg{
+      position:absolute;
+      left:50%; 
+      top:50%; 
+      transform:translate(-50%,-50%);
+      -webkit-app-region: none;
+
+    }
+
+
+    #DiacoDesignLink,#pens{
+      color: #fff;
+      -webkit-app-region: none;
+
     }
   </style>
 </head>
 <body>
-  <button onclick="startTimer(1)">1 Minute</button>
-  <button onclick="startTimer(2)">2 Minutes</button>
-  <button onclick="startTimer(3)">3 Minutes</button>
-  <button onclick="startTimer(5)">5 Minutes</button>
-  <button onclick="startTimer(10)">10 Minutes</button>
-  <button onclick="startTimer(15)">15 Minutes</button>
+
+
+
+  <svg width="320px" height="150px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path id="path1" d="M10 80 Q 150 0 300 80" stroke="gray" stroke-dasharray="5,5" fill="transparent"/>
+  <path id="path2" d="M10 80 Q 150 0 300 80" stroke-width="7" stroke="#7CFC00" fill="transparent" stroke-linecap="round"/>
+  <circle class="knob" r="25" fill="#88CE02" stroke-width="4" stroke="#111"/>
+  </svg>
+  
 
   <script>
     function startTimer(duration) {
       ipcRenderer.send('start-timer', duration);
     }
   </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/Draggable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/MotionPathPlugin.min.js"></script>  
+  <script src="https://assets.codepen.io/16327/DrawSVGPlugin3.min.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      var D = document.createElement('div');
+      TweenMax.set('svg',{overflow:"visible"})
+      TweenMax.set('.knob',{x:10,y:80})
+
+
+      var tl = new TimelineMax({paused:true})
+      .from("#path2",1,{drawSVG:"0%",stroke:'orange',ease:Linear.easeNone})
+      .to('.knob',1,{motionPath:{path:[{x:10,y:80},{x:150,y:40},{x:300,y:80}], type:"quadratic"},ease:Linear.easeNone},0); //    .to('.knob', 1, {motionPath:{path:[{x:10,y:80},{x:150,y:0},{x:300,y:80}], type:"quadratic"}, ease:Linear.easeNone}, 0);
+
+  
+      Draggable.create(D,{
+        trigger:".knob",
+        type:'x',
+        throwProps:true,
+        bounds:{minX:0,maxX:300},
+        onDrag:Update,
+        onThrowUpdate:Update});   
+        function Update(){tl.progress(Math.abs(this.x/300))};
+  
+      TweenMax.to('#path1',0.5,{strokeDashoffset:-10,repeat:-1,ease:Linear.easeNone
+      })
+    });
+  </script>
+  
 </body>
 </html>
