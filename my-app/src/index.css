@@ -89,3 +89,14 @@ body {
     display: none !important;
  }
 }
+
+#textS:before {
+  content: var(--timer-minutes);
+}
+#textS{ 
+  color:#000;
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-family:'Oswald', tahoma; font-size:40vw;
+  text-align:center; white-space: nowrap;
+  opacity:0.4;
+}

@@ -6,24 +6,8 @@
   <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
-  <div id="backgroundMesh">
-    <div class="clock-container">
-      <div class="clock-col">
-        <p class="clock-minutes clock-timer">
-        </p>
-        <p class="clock-label">
-          Minutes
-        </p>
-      </div>
-      <div class="clock-col">
-        <p class="clock-seconds clock-timer">
-        </p>
-        <p class="clock-label">
-          Seconds
-        </p>
-      </div>
-    </div>
-  </div>
+  <span id="textS"></span>
+
   <script>
 
     function getQueryParam(param) {
@@ -62,10 +46,16 @@
       const minutes = Math.max(Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60)), 0);
       const seconds = Math.max(Math.floor((remainingTime % (1000 * 60)) / 1000), 0);
 
+      console.log("seconds: " + seconds);
+      var allTimes = 0;
 
       // Update the timer elements with the new value
-
-      document.documentElement.style.setProperty('--timer-minutes', "'" + minutes + "'");
+      if (parseInt(seconds) < 10) {
+        allTimes = minutes + ":0" + seconds;
+      } else {
+        allTimes = minutes + ":" + seconds;
+      }
+      document.documentElement.style.setProperty('--timer-minutes', "'" + allTimes + "'");
       document.documentElement.style.setProperty('--timer-seconds', "'" + seconds + "'");
       requestAnimationFrame(updateTime);
     }

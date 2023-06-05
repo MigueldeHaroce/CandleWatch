@@ -2,6 +2,7 @@ const { app, ipcMain } = require('electron');
 const path = require('path');
 const { BrowserWindow } = require('electron-acrylic-window');
 const sound = require("sound-play");
+const { Menu, MenuItem } = require('electron')
 
 let mainWindow;
 
@@ -22,6 +23,31 @@ function createWindow() {
     },
   });
   mainWindow.loadFile(path.join(__dirname, 'selectTime.html'));
+
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: 'New Menu Item',
+    click: () => {
+      console.log('New Menu Item clicked')
+    }
+  }))
+  menu.append(new MenuItem({
+    label: 'Minimize',
+    click: () => {
+      mainWindow.minimize()
+    }
+  }))
+  menu.append(new MenuItem({
+    label: 'Close',
+    click: () => {
+      mainWindow.close()
+    }
+  }))
+
+  mainWindow.webContents.on('context-menu', (e) => {
+    e.preventDefault()
+    menu.popup({ window: mainWindow })
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null;

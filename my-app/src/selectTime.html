@@ -37,9 +37,136 @@
       -webkit-app-region: none;
 
     }
+
+
+    .center-center {
+      position: fixed;
+      left: 50%;
+      top: 70%;
+      transform: translate(-50%);
+      -webkit-app-region: none;
+
+    }
+    [class*="btn-glitch-"] {
+      display: inline-block;
+      font-family: "VT323", monospace;
+      border: 1px solid white;
+      color: white;
+      padding: 10px 13px;
+      min-width: 175px;
+      line-height: 1.5em;
+      white-space: no-wrap;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    [class*="btn-glitch-"] .text, [class*="btn-glitch-"] .decoration {
+      display: inline-block;
+    }
+    [class*="btn-glitch-"] .decoration {
+      display: inline-block;
+      float: right;
+    }
+    [class*="btn-glitch-"]:hover, [class*="btn-glitch-"]:focus {
+      animation-name: glitch;
+      animation-duration: 0.2s;
+      background-color: rgb(136, 206, 2);
+      color: black;
+      border: 1px solid white;
+    }
+    [class*="btn-glitch-"]:hover .text-decoration, [class*="btn-glitch-"]:focus .text-decoration {
+      animation-name: blink;
+      animation-duration: 0.1s;
+      animation-iteration-count: infinite;
+    }
+    [class*="btn-glitch-"]:hover .decoration, [class*="btn-glitch-"]:focus .decoration {
+      animation-name: blink;
+      animation-duration: 0.1s;
+      animation-iteration-count: infinite;
+    }
+    [class*="btn-glitch-"]:hover :before, [class*="btn-glitch-"]:focus :before {
+      content: " ";
+      width: 15px;
+      border: 1px solid black;
+      position: absolute;
+      right: 25%;
+      bottom: 3px;
+      transform: rotate(35deg);
+    }
+    [class*="btn-glitch-"]:hover :after, [class*="btn-glitch-"]:focus :after {
+      animation-name: shrink;
+      animation-duration: 0.5s;
+      animation-iteration-count: 1;
+      animation-fill-mode: forwards;
+      content: " ";
+      width: 75%;
+      border: 1px solid black;
+      position: absolute;
+      left: 0;
+      bottom: 5px;
+    }
+    [class*="btn-glitch-"]:active {
+      background: none;
+      color: rgb(136, 206, 2);
+    }
+    [class*="btn-glitch-"]:active .text-decoration {
+      animation-name: none;
+    }
+    [class*="btn-glitch-"]:active .decoration {
+      animation-name: none;
+    }
+    [class*="btn-glitch-"]:active :before, [class*="btn-glitch-"]:active :after {
+      display: none;
+    }
+
+    @keyframes glitch {
+      25% {
+        background-color: red;
+        transform: translateX(-10px);
+        letter-spacing: 10px;
+      }
+      35% {
+        background-color: green;
+        transform: translate(10px);
+      }
+      59% {
+        opacity: 0;
+      }
+      60% {
+        background-color: blue;
+        transform: translate(-10px);
+        filter: blur(5px);
+      }
+      100% {
+        background-color: yellow;
+        blur: 5px;
+      }
+    }
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+    @keyframes shrink {
+      100% {
+        width: 10%;
+      }
+    }
+    #textS{ 
+      color:#000;
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      font-family:'Oswald', tahoma; font-size:40vw;
+      text-align:center; white-space: nowrap;
+      opacity:0.2;
+    }
   </style>
 </head>
 <body>
+  <span id="textS"></span>
+  <div class="center-center">
+    <a class="btn-glitch-fill">
+      <span class="text">// Initialize</span><span class="text-decoration">_</span><span class="decoration">&rArr;</span>
+    </a>
+  </div>
 
 
 
@@ -65,23 +192,53 @@
       TweenMax.set('svg',{overflow:"visible"})
       TweenMax.set('.knob',{x:10,y:80})
 
-
       var tl = new TimelineMax({paused:true})
-      .from("#path2",1,{drawSVG:"0%",stroke:'orange',ease:Linear.easeNone})
-      .to('.knob',1,{motionPath:{path:[{x:10,y:80},{x:150,y:40},{x:300,y:80}], type:"quadratic"},ease:Linear.easeNone},0); //    .to('.knob', 1, {motionPath:{path:[{x:10,y:80},{x:150,y:0},{x:300,y:80}], type:"quadratic"}, ease:Linear.easeNone}, 0);
+        .from("#path2", 1, {drawSVG: "0%", stroke: 'orange', ease: Linear.easeNone})
+        .to('.knob', 1, {motionPath: {path: "#path2", type: "quadratic"}, ease: Linear.easeNone}, 0);
 
+      Draggable.create(D, {
+        trigger: ".knob",
+        type: 'x',
+        throwProps: true,
+        bounds: {minX: 10, maxX: 300},
+        snap: {
+          x: function(endValue) {
+            var step = 58; // Width of each step (320 / 5 = 64, but we subtract a bit for accuracy)
+            return Math.round(endValue / step) * step;
+          }
+        },
+        onDrag: Update,
+        onThrowUpdate: Update
+      });   
+      
+      var currentStep = 0; // Define the currentStep variable outside of the Update function
+
+      function Update() {
+        var knobPosition = Math.abs(this.x / 300); // Calculate the position of the knob as a percentage
+        var step = 1/5; // Define the step size
+        knobPosition = Math.round(knobPosition / step) * step; // Snap the knob position to the nearest step
+        var textElement = document.getElementById('textS');
+        
+        // Define the text to display at each step
+        var stepTexts = ["01", "03", "05", "10", "15", "30"];
+        currentStep = Math.round(knobPosition / step);
+        textElement.textContent = stepTexts[currentStep]; // Update the span text with the desired text for the current step
+        
+        tl.progress(knobPosition);
+      }
+
+            // Define the durations for each step
+      var stepDurations = [1, 3, 5, 10, 15];
+
+      // Add an event listener to the center-center div
+      document.querySelector('.center-center').addEventListener('click', function() {
+        // Calculate the current step based on the position of the knob
+        
+        // Call the startTimer function with the appropriate duration for the current step
+        startTimer(stepDurations[currentStep]);
+      });
   
-      Draggable.create(D,{
-        trigger:".knob",
-        type:'x',
-        throwProps:true,
-        bounds:{minX:0,maxX:300},
-        onDrag:Update,
-        onThrowUpdate:Update});   
-        function Update(){tl.progress(Math.abs(this.x/300))};
-  
-      TweenMax.to('#path1',0.5,{strokeDashoffset:-10,repeat:-1,ease:Linear.easeNone
-      })
+      TweenMax.to('#path1', 0.5, {strokeDashoffset: -10, repeat: -1, ease: Linear.easeNone});
     });
   </script>
   
