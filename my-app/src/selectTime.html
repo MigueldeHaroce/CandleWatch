@@ -28,14 +28,12 @@
       top:50%; 
       transform:translate(-50%,-50%);
       -webkit-app-region: none;
-
     }
 
 
     #DiacoDesignLink,#pens{
       color: #fff;
       -webkit-app-region: none;
-
     }
 
 
@@ -45,6 +43,8 @@
       top: 70%;
       transform: translate(-50%);
       -webkit-app-region: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
 
     }
     [class*="btn-glitch-"] {
@@ -58,9 +58,13 @@
       white-space: no-wrap;
       text-transform: uppercase;
       cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     [class*="btn-glitch-"] .text, [class*="btn-glitch-"] .decoration {
       display: inline-block;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
     [class*="btn-glitch-"] .decoration {
       display: inline-block;
@@ -157,13 +161,16 @@
       font-family:'Oswald', tahoma; font-size:40vw;
       text-align:center; white-space: nowrap;
       opacity:0.2;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-app-region: drag;
     }
   </style>
 </head>
 <body>
-  <span id="textS"></span>
-  <div class="center-center">
-    <a class="btn-glitch-fill">
+  <span id="textS" draggable="false"></span>
+  <div class="center-center" draggable="false">
+    <a class="btn-glitch-fill" draggable="false">
       <span class="text">// Initialize</span><span class="text-decoration">_</span><span class="decoration">&rArr;</span>
     </a>
   </div>

@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
-  <span id="textS"></span>
+  <span id="textS" draggable="false"></span>
 
   <script>
 
@@ -41,12 +41,9 @@
       const remainingTime = endTime - currentTime;
 
       // Convert remaining time to days, hours, minutes, and seconds
-      const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.max(Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60)), 0);
       const seconds = Math.max(Math.floor((remainingTime % (1000 * 60)) / 1000), 0);
 
-      console.log("seconds: " + seconds);
       var allTimes = 0;
 
       // Update the timer elements with the new value

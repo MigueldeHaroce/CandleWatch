@@ -1,8 +1,7 @@
-const { app, ipcMain } = require('electron');
+const { app, ipcMain, globalShortcut } = require('electron');
 const path = require('path');
 const { BrowserWindow } = require('electron-acrylic-window');
 const sound = require("sound-play");
-const { Menu, MenuItem } = require('electron')
 
 let mainWindow;
 
@@ -10,7 +9,10 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 455,
     height: 370,// Enable transparent background
+    minHeight: 110,
+    minWidth: 170,
     frame: false, 
+    resizable: false,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),
@@ -23,31 +25,6 @@ function createWindow() {
     },
   });
   mainWindow.loadFile(path.join(__dirname, 'selectTime.html'));
-
-  const menu = new Menu()
-  menu.append(new MenuItem({
-    label: 'New Menu Item',
-    click: () => {
-      console.log('New Menu Item clicked')
-    }
-  }))
-  menu.append(new MenuItem({
-    label: 'Minimize',
-    click: () => {
-      mainWindow.minimize()
-    }
-  }))
-  menu.append(new MenuItem({
-    label: 'Close',
-    click: () => {
-      mainWindow.close()
-    }
-  }))
-
-  mainWindow.webContents.on('context-menu', (e) => {
-    e.preventDefault()
-    menu.popup({ window: mainWindow })
-  })
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -68,19 +45,28 @@ app.on('activate', () => {
   }
 });
 
+app.whenReady().then(() => {
+  // Register an empty function as the handler for the Ctrl+Shift+I shortcut
+  globalShortcut.register('CommandOrControl+Shift+I', () => {})
+})
+
+app.on('will-quit', () => {
+  // Unregister the custom handler when the app is quitting
+  globalShortcut.unregisterAll()
+})
+
 ipcMain.on('start-timer', (event, duration) => {
   let endTime = new Date().getTime() + duration * 60 * 1000;
 
   BrowserWindow.getFocusedWindow().loadURL(`file://${__dirname}/index.html?duration=${duration}`);
+  BrowserWindow.getFocusedWindow().setResizable(true);
 
   event.sender.send('durationSelected', duration);
 
   const updateTimer = () => {
     const currentTime = new Date().getTime();
     const remainingTime = endTime - currentTime;
-  
-    console.log(remainingTime);
-  
+    
     if (remainingTime > 0) {
       let focusedWindow = BrowserWindow.getFocusedWindow();
       if (!focusedWindow) {
