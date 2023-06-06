@@ -30,5 +30,24 @@
     "@electron-forge/maker-squirrel": "^6.1.1",
     "@electron-forge/maker-zip": "^6.1.1",
     "electron": "25.0.1"
+  },
+  "build": {
+    "appId": "com.example.myapp",
+    "productName": "CandleWatch",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/logo.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "src/logo.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "src/logo.png"
+    }
   }
 }
