@@ -165,6 +165,16 @@
       -webkit-tap-highlight-color: transparent;
       -webkit-app-region: drag;
     }
+
+    @keyframes blink {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .blink {
+      animation: blink 1s infinite;
+    }
   </style>
 </head>
 <body>
@@ -173,6 +183,8 @@
     <a class="btn-glitch-fill" draggable="false">
       <span class="text">// Initialize</span><span class="text-decoration">_</span><span class="decoration">&rArr;</span>
     </a>
+    <br>
+    <span id="waitingMessage"></span>
   </div>
 
 
@@ -186,7 +198,18 @@
 
   <script>
     function startTimer(duration) {
-      ipcRenderer.send('start-timer', duration);
+      setInterval(() => {
+        const now = new Date();
+        const currentSeconds = now.getSeconds();
+        if (currentSeconds === 0) {
+          ipcRenderer.send('start-timer', duration);
+          document.getElementById('waitingMessage').textContent = '';
+        } else {
+          document.getElementById('waitingMessage').textContent = 'Waiting for next minute...';
+          const dots = document.getElementById('waitingMessage');
+          dots.classList.add('blink');
+        }
+      }, 1000);
     }
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js"></script>

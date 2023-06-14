@@ -67,6 +67,8 @@ ipcMain.on('start-timer', (event, duration) => {
     const currentTime = new Date().getTime();
     const remainingTime = endTime - currentTime;
     
+    console.log(remainingTime);
+
     if (remainingTime > 0) {
       let focusedWindow = BrowserWindow.getFocusedWindow();
       if (!focusedWindow) {
@@ -80,7 +82,8 @@ ipcMain.on('start-timer', (event, duration) => {
         focusedWindow.webContents.send('update-timer', remainingTime);
       }
 
-      if (remainingTime <= 4500 && remainingTime >= 4000) {
+      if (remainingTime <= 5000 && remainingTime >= 4500) {
+        console.log('sound played');
         const filePath = path.join(__dirname, "sound.mp3");
         sound.play(filePath);
       }
