@@ -30,17 +30,73 @@
       -webkit-app-region: none;
     }
     
-    #waitingMessage {
-      color: #fff;
-      font-family:'Oswald', tahoma; 
-      font-size:3vw;
+    ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      margin-left: 23px;
+      margin-top: 12.5px;
+      opacity: 0;
+    }
+
+    ul li {
+      list-style: none;
+      color: #484848;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1em;
+      letter-spacing: 15px;
+      animation: animate 1.4s linear infinite;
+    }
+
+    @keyframes animate {
+      0% {
+        color: #484848;
+        text-shadow: none;
+      }
+
+      90% {
+        color: #484848;
+        text-shadow: none;
+      }
+
+      100% {
+        color: #88CE02;
+        text-shadow: 0 0 7px #88CE02, 0 0 50px #539200;
+      }
+    }
+
+    ul li:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    ul li:nth-child(2) {
+      animation-delay: 0.4s;
+    }
+
+    ul li:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    ul li:nth-child(4) {
+      animation-delay: 0.8s;
+    }
+
+    ul li:nth-child(5) {
+      animation-delay: 1s;
+    }
+
+    ul li:nth-child(6) {
+      animation-delay: 1.2s;
+    }
+
+    ul li:nth-child(7) {
+      animation-delay: 1.4s;
     }
 
     #DiacoDesignLink,#pens{
       color: #fff;
       -webkit-app-region: none;
     }
-
 
     .center-center {
       position: fixed;
@@ -180,6 +236,24 @@
     .blink {
       animation: blink 1s infinite;
     }
+
+    .snakeEffect {
+      color: lightgrey;
+      animation: snake 1s infinite;
+    }
+
+    @keyframes snake {
+      0% {
+        color: lightgrey;
+      }
+      50% {
+        color: yellow;
+      }
+      100% {
+        color: lightgrey;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -189,7 +263,15 @@
       <span class="text">// Initialize</span><span class="text-decoration">_</span><span class="decoration">&rArr;</span>
     </a>
     <br>
-    <span id="waitingMessage"></span>
+    <ul id="waitingMessage">
+      <li>W</li>
+      <li>A</li>
+      <li>I</li>
+      <li>T</li>
+      <li>I</li>
+      <li>N</li>
+      <li>G</li>
+    </ul>
   </div>
 
 
@@ -210,9 +292,8 @@
           ipcRenderer.send('start-timer', duration);
           document.getElementById('waitingMessage').textContent = '';
         } else {
-          document.getElementById('waitingMessage').textContent = 'Waiting for next minute...';
-          const dots = document.getElementById('waitingMessage');
-          dots.classList.add('blink');
+          const waiting = document.getElementById('waitingMessage');
+          waiting.style.opacity = '1';
         }
       }, 1000);
     }

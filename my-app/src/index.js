@@ -22,9 +22,11 @@ function createWindow() {
       effect: 'acrylic', // (default) or 'blur'
       disableOnBlur: true, // (default)
     },
+    show: false,
   });
-  mainWindow.loadFile(path.join(__dirname, 'selectTime.html'));
 
+  mainWindow.loadFile(path.join(__dirname, 'selectTime.html'));
+  
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
@@ -54,12 +56,11 @@ app.on('will-quit', () => {
   globalShortcut.unregisterAll()
 })
 
-/*
+
 ipcMain.on('start-timer', (event, duration) => {
   let endTime = new Date().getTime() + duration * 60 * 1000;
 
-  BrowserWindow.getFocusedWindow().loadURL(`file://${__dirname}/index.html?duration=${duration}`);
-  BrowserWindow.getFocusedWindow().setResizable(true);
+  BrowserWindow.getAllWindows().loadURL(`file://${__dirname}/index.html?duration=${duration}`);
 
   event.sender.send('durationSelected', duration);
 
@@ -82,7 +83,7 @@ ipcMain.on('start-timer', (event, duration) => {
         focusedWindow.webContents.send('update-timer', remainingTime);
       }
 
-      if (remainingTime <= 5000 && remainingTime >= 4500) {
+      if (remainingTime <= 4850 && remainingTime >= 4250) {
         console.log('sound played');
         const filePath = path.join(__dirname, "sound.mp3");
         sound.play(filePath);
@@ -110,4 +111,3 @@ ipcMain.on('start-timer', (event, duration) => {
   updateTimer();
   
 });
-*/
