@@ -12,7 +12,6 @@ function createWindow() {
     minHeight: 110,
     minWidth: 170,
     frame: false, 
-    resizable: false,
     webPreferences: {
       nodeIntegration: true,
       preload: path.join(__dirname, 'preload.js'),
@@ -44,17 +43,18 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
+/*
 app.whenReady().then(() => {
   // Register an empty function as the handler for the Ctrl+Shift+I shortcut
   globalShortcut.register('CommandOrControl+Shift+I', () => {})
 })
-
+*/
 app.on('will-quit', () => {
   // Unregister the custom handler when the app is quitting
   globalShortcut.unregisterAll()
 })
 
+/*
 ipcMain.on('start-timer', (event, duration) => {
   let endTime = new Date().getTime() + duration * 60 * 1000;
 
@@ -110,3 +110,4 @@ ipcMain.on('start-timer', (event, duration) => {
   updateTimer();
   
 });
+*/
