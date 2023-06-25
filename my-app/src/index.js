@@ -22,7 +22,6 @@ function createWindow() {
       effect: 'acrylic', // (default) or 'blur'
       disableOnBlur: true, // (default)
     },
-    show: false,
   });
 
   mainWindow.loadFile(path.join(__dirname, 'selectTime.html'));
@@ -52,15 +51,24 @@ app.whenReady().then(() => {
 })
 */
 app.on('will-quit', () => {
-  // Unregister the custom handler when the app is quitting
   globalShortcut.unregisterAll()
 })
 
 
 ipcMain.on('start-timer', (event, duration) => {
-  let endTime = new Date().getTime() + duration * 60 * 1000;
 
-  BrowserWindow.getAllWindows().loadURL(`file://${__dirname}/index.html?duration=${duration}`);
+  let endTime = new Date().getTime() + duration * 60 * 1000;
+  let soundPlayed = false;
+
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+  if (focusedWindow) {
+    focusedWindow.loadURL(`file://${__dirname}/index.html?duration=${duration}`);
+  } else {
+    const windows = BrowserWindow.getAllWindows();
+    if (windows.length > 0) {
+      windows[0].loadURL(`file://${__dirname}/index.html?duration=${duration}`);
+    }
+  }
 
   event.sender.send('durationSelected', duration);
 
@@ -83,15 +91,17 @@ ipcMain.on('start-timer', (event, duration) => {
         focusedWindow.webContents.send('update-timer', remainingTime);
       }
 
-      if (remainingTime <= 4850 && remainingTime >= 4250) {
-        console.log('sound played');
+      if (remainingTime <= 4500 && !soundPlayed) {
         const filePath = path.join(__dirname, "sound.mp3");
         sound.play(filePath);
+        soundPlayed = true;
+      } else if (remainingTime > 5000) {
+        soundPlayed = false;
       }
+
     } else {
       console.log('Timer has reached 0');
   
-      // Timer has reached 0, start over with a new duration
       const newEndTime = new Date().getTime() + duration * 60 * 1000;
   
       const windows = BrowserWindow.getAllWindows();
@@ -101,11 +111,10 @@ ipcMain.on('start-timer', (event, duration) => {
   
       event.sender.send('durationSelected', duration);
   
-      // Start the timer again with the new duration
       endTime = newEndTime;
     }
   
-    setTimeout(updateTimer, 500); // Update the timer every second
+    setTimeout(updateTimer, 500);
   };
   
   updateTimer();
