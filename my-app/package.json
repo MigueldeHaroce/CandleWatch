@@ -18,9 +18,11 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@electron/asar": "^3.2.4",
     "electron-acrylic-window": "^0.5.11",
     "electron-squirrel-startup": "^1.0.0",
     "gsap": "^3.11.5",
+    "modclean": "^3.0.0-beta.1",
     "sound-play": "^1.1.0"
   },
   "devDependencies": {
